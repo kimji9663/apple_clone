@@ -1,6 +1,6 @@
 (() => {
 
-    let yOffset = 0; //window.pageYOffse 대신 쓸 변수(현재 위치값)
+    let yOffset = 0; //window.pageYOffset 대신 쓸 변수(현재 위치값)
     let prevScrollHeight = 0; // 현재 위치한 스크롤 위치값 이전의 섹션 높이값들의 합
     let currentScene = 0; // 현재 보이는 scene(scroll-section)
     let enterNewScene = false // 새 scene에 진입하면 true가 됨
@@ -24,6 +24,7 @@
             values: {
                 videoImageCount: 300,
                 imageSequence: [0, 299],
+                canvas_opacity: [1, 0, {start: 0.9, end: 1}],
                 messageA_opacity_in: [0, 1, { start: 0.1, end: 0.2 }],
                 messageB_opacity_in: [0, 1, { start: 0.3, end: 0.4 }],
                 messageC_opacity_in: [0, 1, { start: 0.5, end: 0.6 }],
@@ -62,9 +63,16 @@
                 messageB: document.querySelector('#scroll-section-2 .b'),
                 messageC: document.querySelector('#scroll-section-2 .c'),
                 pinB: document.querySelector('#scroll-section-2 .b .pin'),
-                pinC: document.querySelector('#scroll-section-2 .c .pin')
+                pinC: document.querySelector('#scroll-section-2 .c .pin'),
+                canvas: document.querySelector('#video-canvas-1'),
+                context: document.querySelector('#video-canvas-1').getContext('2d'),
+                videoImages: []
             },
             values: {
+                videoImageCount: 960,
+                imageSequence: [0, 959],
+                canvas_opacity_in: [0, 1, {start: 0, end: 0.1}],
+                canvas_opacity_out: [1, 0, {start: 0.95, end: 1}],
                 messageA_translateY_in: [20, 0, { start: 0.15, end: 0.2 }],
                 messageB_translateY_in: [30, 0, { start: 0.6, end: 0.65 }],
                 messageC_translateY_in: [30, 0, { start: 0.87, end: 0.92 }],
@@ -102,10 +110,17 @@
         for(let i = 0; i < sceneInfo[0].values.videoImageCount; i++){
             //imgElem = new Image();
             imgElem = document.createElement('img');
-            imgElem.src = `./video/IMG_${6726 + i}.JPG`;
+            imgElem.src = `./video/001/IMG_${6726 + i}.JPG`;
             sceneInfo[0].objs.videoImages.push(imgElem);
         }
         //console.log(sceneInfo[0].objs.videoImages);
+
+        let imgElem2;
+        for(let i = 0; i < sceneInfo[2].values.videoImageCount; i++){
+            imgElem2 = new Image();
+            imgElem2.src = `./video/002/IMG_${7027 + i}.JPG`;
+            sceneInfo[2].objs.videoImages.push(imgElem2);
+        }
     }
     setCanvasImages();
 
@@ -129,6 +144,10 @@
             }
         }
         document.body.setAttribute('id', `show-scene-${currentScene}`);
+
+        const heightRatio = window.innerHeight / 1080;
+        sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
+        sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
     }
     
     function calcValues(values, currentYOffset) {
@@ -168,8 +187,10 @@
         switch (currentScene) {
             // translate3d가 translateY보다 랜더 속도가 빠르다
             case 0:
-                let sequence = calcValues(values.imageSequence, currentYOffset);
-                console.log(parseInt(sequence));
+                let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
+                //console.log(sequence);
+                objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+                objs.canvas.style.opacity = calcValues(values.canvas_opacity, currentYOffset);
 
                 if (scrollRatio <= 0.22){
                     objs.messageA.style.opacity = calcValues(values.messageA_opacity_in, currentYOffset);
@@ -213,6 +234,17 @@
                 break;
                 
             case 2:
+                let sequence2 = Math.round(calcValues(values.imageSequence, currentYOffset));
+                objs.context.drawImage(objs.videoImages[sequence2], 0, 0);
+
+                if (scrollRatio <= 0.5) {
+                    // in
+                    objs.canvas.style.opacity = calcValues(values.canvas_opacity_in, currentYOffset);
+                } else {
+                    // out
+                    objs.canvas.style.opacity = calcValues(values.canvas_opacity_out, currentYOffset);
+                }
+                
                 if (scrollRatio <= 0.32) {
                     // in
                     objs.messageA.style.opacity = calcValues(values.messageA_opacity_in, currentYOffset);
@@ -290,6 +322,9 @@
         scrollLoop();
     });
 
-    window.addEventListener('load', setLayout);
+    window.addEventListener('load', () => {
+        setLayout();
+        sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
+    });
     window.addEventListener('resize', setLayout);
 })();
