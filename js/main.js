@@ -96,7 +96,9 @@
             scrollHeight: 0,
             objs: {
                 container: document.querySelector('#scroll-section-3'),
-                canvasCaption: document.querySelector('.canvas-caption')
+                canvasCaption: document.querySelector('.canvas-caption'),
+                canvas: document.querySelector('.image-blend-canvas'),
+                context: document.querySelector('.image-blend-canvas').getContext('2d')
             },
             values: {
     
@@ -282,6 +284,21 @@
                 break;
                 
             case 3:
+                // 가로, 세로 꽉 차게 하기 위해 계산
+                const widthRatio = window.innerWidth / objs.canvas.width;
+                const heightRatio = window.innerHeight / objs.canvas.height;
+                console.log(widthRatio, heightRatio);
+
+                if (widthRatio <= heightRatio) {
+                    // 브라우저 창이 캔버스보다 홀쭉한 경우
+                    canvasScaleRatio = heightRatio;
+                } else {
+                    // 브라우저 창이 캔버스보다 납작한 경우
+                    canvasScaleRatio = widthRatio;
+                }
+
+                objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
+
                 break;
         }
     }

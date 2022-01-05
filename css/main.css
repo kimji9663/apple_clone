@@ -60,7 +60,7 @@ a {
 	margin-left: 2em;
 }
 .scroll-section {
-	border: 3px solid red;
+	border: 3px solid green;
 	padding-top: 50vh;
 }
 #scroll-section-0 h1 {
@@ -114,6 +114,14 @@ a {
 	position: absolute;
 	top: 50%;
 	left: 50%;
+}
+.image-blend-canvas {
+	background: #c8dfdf;
+}
+#scroll-section-3 {
+	display: flex;
+	flex-direction: column; /* 강제로 width값이 100%로가 됨 */
+	align-items: center;
 }
 .description {
 	max-width: 1000px;
