@@ -98,10 +98,16 @@
                 container: document.querySelector('#scroll-section-3'),
                 canvasCaption: document.querySelector('.canvas-caption'),
                 canvas: document.querySelector('.image-blend-canvas'),
-                context: document.querySelector('.image-blend-canvas').getContext('2d')
+                context: document.querySelector('.image-blend-canvas').getContext('2d'),
+                imagesPath: [
+                    './images/blend-image-1.jpg',
+                    './images/blend-image-2.jpg'
+                ],
+                images: []
             },
             values: {
-    
+                rect1X: [ 0, 0, { start: 0, end: 0 }],
+                rect2X: [ 0, 0, { start: 0, end: 0 }],
             }
         }
         
@@ -122,6 +128,15 @@
             imgElem2 = new Image();
             imgElem2.src = `./video/002/IMG_${7027 + i}.JPG`;
             sceneInfo[2].objs.videoImages.push(imgElem2);
+        }
+
+        let imgElem3;
+        for (let i = 0; i < sceneInfo[3].objs.imagesPath.length; i++){
+            //imgElem = new Image();
+            imgElem3 = document.createElement('img');
+            imgElem3.src = sceneInfo[3].objs.imagesPath[i];
+            sceneInfo[3].objs.images.push(imgElem3);
+            console.log(sceneInfo[3].objs.images);
         }
     }
     setCanvasImages();
@@ -298,6 +313,21 @@
                 }
 
                 objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
+                objs.context.drawImage(objs.images[0], 0, 0); // blend-image-1 그리기
+
+                // 캔버스 사이즈에 맞춘 innerWidth와 innerHeight
+                const recalculatedInnerWidth = window.innerWidth / canvasScaleRatio;
+                const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
+
+                const whiteRectWidth = recalculatedInnerWidth * 0.15; // 가장자리 흰색박스는 전체의 15%를 차지하는 사이즈로.
+                values.rect1X[0] = (objs.canvas.width - recalculatedInnerWidth) / 2; // 박스1 시작점
+                values.rect1X[1] = values.rect1X[0] - whiteRectWidth; // 박스1 시작점 - 박스1 너비 = 끝점
+                values.rect2X[0] = values.rect1X[0] + recalculatedInnerWidth - whiteRectWidth; // 박스2 시작점
+                values.rect2X[1] = values.rect2X[0] + whiteRectWidth; // 박스2 시작점 + 박스2 너비 = 끝점
+
+                // 흰색 박스 그리기, fillRect(x, y, width, height)
+                objs.context.fillRect(values.rect1X[0], 0, parseInt(whiteRectWidth), objs.canvas.height);
+                objs.context.fillRect(values.rect2X[0], 0, parseInt(whiteRectWidth), objs.canvas.height);
 
                 break;
         }
