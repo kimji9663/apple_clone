@@ -319,6 +319,8 @@
                 const recalculatedInnerWidth = window.innerWidth / canvasScaleRatio;
                 const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
 
+                console.log(objs.canvas.getBoundingClientRect());
+
                 const whiteRectWidth = recalculatedInnerWidth * 0.15; // 가장자리 흰색박스는 전체의 15%를 차지하는 사이즈로.
                 values.rect1X[0] = (objs.canvas.width - recalculatedInnerWidth) / 2; // 박스1 시작점
                 values.rect1X[1] = values.rect1X[0] - whiteRectWidth; // 박스1 시작점 - 박스1 너비 = 끝점
