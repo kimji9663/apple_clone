@@ -108,6 +108,7 @@
             values: {
                 rect1X: [ 0, 0, { start: 0, end: 0 }],
                 rect2X: [ 0, 0, { start: 0, end: 0 }],
+                rectStartY: 0
             }
         }
         
@@ -318,6 +319,13 @@
                 // 캔버스 사이즈에 맞춘 innerWidth와 innerHeight
                 const recalculatedInnerWidth = window.innerWidth / canvasScaleRatio;
                 const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
+
+                if (!values.rectStartY) { // rectStartY가 0이면 값이 없는 것으로 판단함, true
+                    values.rectStartY = objs.canvas.getBoundingClientRect().top;
+                    //console.log(values.rectStartY);
+                    values.rect1X[2].end = values.rectStartY / scrollHeight;
+                    values.rect2X[2].end = values.rectStartY / scrollHeight;
+                }
 
                 const whiteRectWidth = recalculatedInnerWidth * 0.15; // 가장자리 흰색박스는 전체의 15%를 차지하는 사이즈로.
                 values.rect1X[0] = (objs.canvas.width - recalculatedInnerWidth) / 2; // 박스1 시작점
