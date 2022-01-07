@@ -303,7 +303,7 @@
                 // 가로, 세로 꽉 차게 하기 위해 계산
                 const widthRatio = window.innerWidth / objs.canvas.width;
                 const heightRatio = window.innerHeight / objs.canvas.height;
-                console.log(widthRatio, heightRatio);
+                //console.log(widthRatio, heightRatio);
 
                 if (widthRatio <= heightRatio) {
                     // 브라우저 창이 캔버스보다 홀쭉한 경우
@@ -314,6 +314,7 @@
                 }
 
                 objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
+                objs.context.fillStyle = 'white';
                 objs.context.drawImage(objs.images[0], 0, 0); // blend-image-1 그리기
 
                 // 캔버스 사이즈에 맞춘 innerWidth와 innerHeight
@@ -321,8 +322,14 @@
                 const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
 
                 if (!values.rectStartY) { // rectStartY가 0이면 값이 없는 것으로 판단함, true
-                    values.rectStartY = objs.canvas.getBoundingClientRect().top;
-                    //console.log(values.rectStartY);
+                    //values.rectStartY = objs.canvas.getBoundingClientRect().top;
+                    values.rectStartY = objs.canvas.offsetTop + (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
+                    console.log(values.rectStartY, scrollHeight);
+                    // 시작 시점(%): 브라우저창의 절반 위치 / 현재 section 높이
+                    values.rect1X[2].start = (window.innerHeight / 2) / scrollHeight;
+                    values.rect2X[2].start = (window.innerHeight / 2) / scrollHeight;
+
+                    // 끝나는 시점(%): canvas 현재 위치(현재 section 기준) / 현재 section 높이
                     values.rect1X[2].end = values.rectStartY / scrollHeight;
                     values.rect2X[2].end = values.rectStartY / scrollHeight;
                 }
