@@ -96,7 +96,6 @@ a {
 .sticky-elem {
 	display: none;
 	position: fixed;
-	/* top: 0; */
 	left: 0;
 	width: 100%;
 }
@@ -115,8 +114,9 @@ a {
 	top: 50%;
 	left: 50%;
 }
-.image-blend-canvas {
-	background: #c8dfdf;
+.image-blend-canvas.sticky {
+	position: fixed;
+	top: 0;
 }
 #scroll-section-3 {
 	display: flex;
